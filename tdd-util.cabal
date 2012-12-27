@@ -1,5 +1,5 @@
 name:                  tdd-util
-version:               0.1.0
+version:               0.1.0.1
 cabal-version:         >= 1.10
 build-type:            Simple
 license:               BSD3
@@ -77,4 +77,4 @@ test-suite tdd-util-tests
 source-repository head
     type:     git
     location: git://github.com/bairyn/tdd-util.git
-    tag:      0.1.0
+    tag:      0.1.0.1
