@@ -40,8 +40,6 @@ library
    ,test-framework
    ,test-framework-hunit
    ,test-framework-quickcheck2
-
-   ,pqc
   exposed-modules:
     Test.Util
    ,Test.Util.Framework
@@ -71,8 +69,6 @@ test-suite tdd-util-tests
    ,test-framework
    ,test-framework-hunit
    ,test-framework-quickcheck2
-
-   ,pqc
   other-modules:
     Tests
    ,Test.Test.Util
