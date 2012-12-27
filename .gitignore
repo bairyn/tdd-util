@@ -1,0 +1,5 @@
+dist/
+tags
+.*.sw?
+*.hi
+*.ho
