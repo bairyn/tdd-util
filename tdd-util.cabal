@@ -81,3 +81,4 @@ test-suite tdd-util-tests
 source-repository head
     type:     git
     location: git://github.com/bairyn/tdd-util.git
+    tag:      0.1.0
