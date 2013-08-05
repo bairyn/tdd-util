@@ -10,7 +10,7 @@ maintainer:            Byron James Johnson <ByronJohnsonFP@gmail.com>
 synopsis:              Test framework wrapper
 description:
   tdd-util is a small test framework for TDD (cf.
-  <https:\/\/en.wikipedia.org\/wiki\/Test-driven_development>) that integrates
+  <https://en.wikipedia.org/wiki/Test-driven_development>) that integrates
   three testing libraries, whose modules are all exported under
   "Test.Util.Framework", while providing utilities based on each of these,
   exported under "Test.Util", by wrapping the library @test-framework@.
@@ -67,19 +67,19 @@ description:
   …
   tests :: [TTest]
   tests =
-      [ testGroup "Throwing and catching exceptions - isExceptionThrown" $
-          [ testCase "throwing an exception" $ do
+      [ testGroup \"Throwing and catching exceptions - isExceptionThrown\" $
+          [ testCase \"throwing an exception\" $ do
              thrown <- isExceptionThrown $ do
-                 throwIO $ AssertionFailed "assertion failed"
+                 throwIO $ AssertionFailed \"assertion failed\"
              when (either (\e -> flip const (e :: AssertionFailed) $ False) (const True) $ thrown) $ do
-                 assertString "exception NOT thrown"
-          , testCase "not throwing an exception" $ do
+                 assertString \"exception NOT thrown\"
+          , testCase \"not throwing an exception\" $ do
              thrown <- isExceptionThrown $ do
                  return ()
              when (either (\e -> flip const (e :: AssertionFailed) $ True) (const False) $ thrown) $ do
-                 assertString "exception thrown"
+                 assertString \"exception thrown\"
           ]
-      , testGroup "Throwing and catching exceptions - assert*Thrown" $
+      , testGroup \"Throwing and catching exceptions - assert*Thrown\" $
       …
       ]
       …
@@ -127,8 +127,8 @@ description:
   .
   tests :: [TTest]
   tests =
-      [ testGroup "Test.Test.Util.tests" $ Test.Test.Util.tests
-      , testGroup "Test.Test.Util.Framework.tests" $ Test.Test.Util.Framework.tests
+      [ testGroup \"Test.Test.Util.tests\" $ Test.Test.Util.tests
+      , testGroup \"Test.Test.Util.Framework.tests\" $ Test.Test.Util.Framework.tests
       ]
   @
   .
