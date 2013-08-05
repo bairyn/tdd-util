@@ -50,8 +50,8 @@ tests =
                            (\ ~() -> assertNotThrown (Nothing :: Maybe (AssertionFailed -> String)) m)
                        =<< (isExceptionThrown m :: IO (Either AssertionFailed ()))
         ]
-    -- TODO: (See annotation.)
-    , testGroup "Timed tests (TODO: Once a means of testing a monadic property with many threads is implemented, increase maxDelayTime from 30ms to 600ms; tests may not be as reliable until then.)" $
+    -- TODO: Once a means of testing a monadic property with many threads is implemented, increase maxDelayTime from 30ms to 600ms; tests may not be as reliable until then.
+    , testGroup "Timed tests" $
         [ testGroup "timeMicroseconds" $
             let time process m = do
                     forAllM (choose (0, maxDelayTime)) $ \actualUs -> do
@@ -84,8 +84,8 @@ tests =
                     qAssert $ (abs $ us - actualUs) <= cushion
             ]
         ]
-    -- TODO: (See annotation.)
-    , testGroup "assertMicroseconds (TODO: Once a means of testing a monadic property with many threads is implemented, increase maxDelayTime from 30ms to 600ms; tests may not be as reliable until then.)" $
+    -- TODO: Once a means of testing a monadic property with many threads is implemented, increase maxDelayTime from 30ms to 600ms; tests may not be as reliable until then.
+    , testGroup "assertMicroseconds" $
         [ testProperty "timeoutMicroseconds -> assertMicroseconds (assert*Thrown)" . monadicIO $
             -- (us, cap); cap from us is greater than cushion
             forAllM (choose (0, maxDelayTime)) $ \us -> forAllM (choose (0, maxDelayTime) `suchThat` \cap -> abs (cap - us) > cushion) $ \cap -> do
@@ -118,8 +118,8 @@ tests =
                     maybe True (const False) <$> timeoutProcessMicroseconds cap ph
                 qAssert $ killed == (cap < us)
         ]
-    -- TODO: (See annotation.)
-    , testGroup "assertProcessMicroseconds (TODO: Once a means of testing a monadic property with many threads is implemented, increase maxDelayTime from 30ms to 600ms; tests may not be as reliable until then.)" $
+    -- TODO: Once a means of testing a monadic property with many threads is implemented, increase maxDelayTime from 30ms to 600ms; tests may not be as reliable until then.
+    , testGroup "assertProcessMicroseconds" $
         [ testProperty "timeoutProcessMicroseconds -> assertProcessMicroseconds (assert*Thrown)" . monadicIO $
             -- (us, cap); cap from us is greater than cushion
             forAllM (choose (0, maxDelayTime)) $ \us -> forAllM (choose (0, maxDelayTime) `suchThat` \cap -> abs (cap - us) > cushion) $ \cap -> do

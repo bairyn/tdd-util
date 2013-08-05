@@ -8,7 +8,8 @@ module Test.Util
     , assertThrown
     , assertNotThrown
 
-    -- * Concurrent TDD (TODO: provide a means of testing a monadic property with many threads)
+    -- * Concurrent TDD
+    -- TODO: provide a means of testing a monadic property with many threads
 
     -- * Process timing
     , timeMicroseconds
