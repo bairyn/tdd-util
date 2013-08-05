@@ -7,7 +7,7 @@ license-file:          LICENSE
 copyright:             Copyright (c) 2012 Byron James Johnson
 author:                Byron James Johnson
 maintainer:            Byron James Johnson <ByronJohnsonFP@gmail.com>
-synopsis:              Utilities for TDD with test-framework, HUnit, and QuickCheck
+synopsis:              Test framework wrapper
 description:
   tdd-util is a small test framework for TDD (cf.
   <https:\/\/en.wikipedia.org\/wiki\/Test-driven_development>) that integrates
