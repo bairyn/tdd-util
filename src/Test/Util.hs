@@ -1,6 +1,7 @@
 {-# LANGUAGE GADTs, TemplateHaskell, DeriveDataTypeable #-}
 
--- | A module for various useful functions for TDD missing in other libraries.
+-- | A module containing utilities for testing with @test-framework@, @HUnit@,
+-- and @testable@.
 module Test.Util
     (
     -- * Throwing and catching exceptions
