@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 -- | "Test.Util.Framework" is a super-module that re-exports other modules
 -- pertaining to TDD, so that they can be imported under a single module.
 --
@@ -18,6 +20,12 @@
 --
 -- Unfortunately, Haskell's design makes it inconvenient to rename classes.
 -- In this module, 'Testable' is not re-exported from any module.
+--
+-- QuickCheck-2.6's new "Test.QuickCheck.Test.interrupted" is not exported
+-- under a name that does not conflict with
+-- "Test.QuickCheck.Property.interrupted", from either modules
+-- ("Test.QuickCheck.Test" and "Test.QuickCheck"), since its existence would depend on
+-- the version of QuickCheck.
 module Test.Util.Framework
     ( module Test.HUnit
     , module Test.QuickCheck
@@ -47,7 +55,11 @@ module Test.Util.Framework
 import           System.Random (StdGen)
 import           Test.HUnit hiding (Test, Testable, assert, State, test)
 import qualified Test.HUnit
+#ifdef QUICKCHECK26
+import           Test.QuickCheck hiding (Testable, interrupted)
+#else
 import           Test.QuickCheck hiding (Testable)
+#endif /* #ifdef QUICKCHECK26 */
 import           Test.QuickCheck.All
 import           Test.QuickCheck.Arbitrary
 import           Test.QuickCheck.Function
@@ -60,7 +72,11 @@ import           Test.QuickCheck.Property hiding (Result(reason))
 import qualified Test.QuickCheck.Property
 import           Test.QuickCheck.State hiding (State)
 import qualified Test.QuickCheck.State
+#ifdef QUICKCHECK26
+import           Test.QuickCheck.Test hiding (test, interrupted)
+#else
 import           Test.QuickCheck.Test hiding (test)
+#endif /* #ifdef QUICKCHECK26 */
 import qualified Test.QuickCheck.Test
 import           Test.QuickCheck.Text
 import           Test.Framework hiding (Test)
