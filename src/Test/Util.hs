@@ -30,7 +30,7 @@ module Test.Util
 import Control.Applicative
 --import Control.Concurrent.ParallelIO.Local
 import Control.Exception hiding (catch)
-import Control.Monad.CatchIO
+import Control.Monad.CatchIO as M
 import Control.Monad.IO.Class
 import Control.Lens.TH
 import Data.Dynamic
@@ -49,7 +49,7 @@ import Test.Util.Framework
 -- | Determine whether an exception was caught, and return it if so.
 isExceptionThrown :: (Functor m, MonadCatchIO m, Exception e) => m a -> m (Either e a)
 isExceptionThrown m = do
-    (Right <$> m) `catch` (return . Left)
+    (Right <$> m) `M.catch` (return . Left)
 
 -- | Assert that an exception is thrown.
 --
