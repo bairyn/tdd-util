@@ -303,6 +303,7 @@ test-suite tdd-util-tests
    ,test-framework
    ,test-framework-hunit
    ,test-framework-quickcheck2
+   ,string-class
   if flag(QuickCheck26)
     cpp-options: -DQUICKCHECK26
     build-depends:

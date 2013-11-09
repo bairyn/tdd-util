@@ -8,7 +8,7 @@ import Control.Exception
 import Control.Monad
 import Data.Maybe
 import Data.Proxy
-import Data.String
+import Data.String.Class (fromStringCells)
 import System.IO
 import System.Process
 import Text.Printf
@@ -165,20 +165,20 @@ redirectTests :: [TTest]
 redirectTests =
     [ testCase "catchStdout catches the output of Hello World" $ do
         output <- snd <$> catchStdout helloWorld
-        fromString "Hello, World!\n" @=? output
+        fromStringCells "Hello, World!\n" @=? output
     , testCase "catchStderr catches the output of a program that prints to stderr" $ do
         output <- snd <$> catchStderr helloWorldErr
-        fromString "Hello, World!\n" @=? output
+        fromStringCells "Hello, World!\n" @=? output
     , testCase "catchStdout behaves correctly with exceptions, a test in the middle of other redirectHandle tests" $ do
         assertThrown Nothing (Proxy :: Proxy IOError) $ do
             output <- snd <$> catchStdout (throwIO . userError $ "User error!")
-            fromString "This is not the output." @=? output
+            fromStringCells "This is not the output." @=? output
     , testCase "no stderr is received from hellowWorld" $ do
         output <- snd <$> catchStderr helloWorld
-        fromString "" @=? output
+        fromStringCells "" @=? output
     , testCase "no stdout is received from hellowWorldErr" $ do
         output <- snd <$> catchStdout helloWorldErr
-        fromString "" @=? output
+        fromStringCells "" @=? output
     ]
     where helloWorld :: IO ()
           helloWorld = putStrLn "Hello, World!"
