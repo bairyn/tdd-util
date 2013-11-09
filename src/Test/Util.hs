@@ -20,7 +20,6 @@ module Test.Util
     , assertProcessMicroseconds
 
     -- * Catching stdout/stderr
-    --, redirectHandle
     , catchStdout
     , catchStderr
 
