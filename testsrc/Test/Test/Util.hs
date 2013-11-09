@@ -8,11 +8,13 @@ import Control.Exception
 import Control.Monad
 import Data.Maybe
 import Data.Proxy
+import Data.String
+import System.IO
 import System.Process
 import Text.Printf
 
 import Test.Util
-import Test.Util.Framework
+import Test.Util.Framework hiding (output)
 
 newtype ShowableIO a = ShowableIO (IO a)
 
@@ -134,6 +136,7 @@ tests =
                             assertNotThrown (Nothing :: Maybe (TimeLimitExceeded -> String)) $ do
                                 assertProcessMicroseconds cap =<< sleepM
         ]
+    , mutuallyExclusive . testGroup "catching output" $ redirectTests
     ]
     where cushion :: Integer
           cushion = 20000
@@ -156,3 +159,34 @@ tests =
                 , create_group = False
                 }
             return ph
+
+-- | Group with 'mutuallyExclusive'.
+redirectTests :: [TTest]
+redirectTests =
+    [ testCase "catchStdout catches the output of Hello World" $ do
+        output <- snd <$> catchStdout helloWorld
+        fromString "Hello, World!\n" @=? output
+    , testCase "catchStderr catches the output of a program that prints to stderr" $ do
+        output <- snd <$> catchStderr helloWorldErr
+        fromString "Hello, World!\n" @=? output
+    , testCase "no stderr is received from hellowWorld" $ do
+        output <- snd <$> catchStderr helloWorld
+        fromString "" @=? output
+    , testCase "catchStdout behaves correctly with exceptions, a test in the middle of other redirectHandle tests" $ do
+        assertThrown Nothing (Proxy :: Proxy IOError) $ do
+            output <- snd <$> ((throwIO . userError $ "User error!") >> catchStdout helloWorld)
+            fromString "This is not the output." @=? output
+    , testCase "no stdout is received from hellowWorldErr" $ do
+        output <- snd <$> catchStdout helloWorldErr
+        fromString "" @=? output
+    , testCase "redirectHandle stdout works the same as catchStdout" $ do
+        output <- snd <$> redirectHandle stdout "<stdout>" helloWorld
+        fromString "Hello, World!\n" @=? output
+    , testCase "redirectHandle stderr works the same as catchStderr" $ do
+        output <- snd <$> redirectHandle stderr "<stderr>" helloWorldErr
+        fromString "Hello, World!\n" @=? output
+    ]
+    where helloWorld :: IO ()
+          helloWorld = putStrLn "Hello, World!"
+          helloWorldErr :: IO ()
+          helloWorldErr = hPutStrLn stderr "Hello, World!"

@@ -260,6 +260,8 @@ library
    ,time
    ,parallel-io
    ,MonadCatchIO-transformers
+   ,bytestring
+   ,knob
    ,HUnit
    ,test-framework
    ,test-framework-hunit
@@ -295,6 +297,8 @@ test-suite tdd-util-tests
    ,time
    ,parallel-io
    ,MonadCatchIO-transformers
+   ,bytestring
+   ,knob
    ,HUnit
    ,test-framework
    ,test-framework-hunit
