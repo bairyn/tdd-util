@@ -67,7 +67,11 @@ isExceptionThrown m = do
 -- default string, is output.
 --
 -- For more control, see the more fundamental 'isExceptionThrown'.
-assertThrown :: (Functor m, MonadCatchIO m, Exception e, Show e) => Maybe String -> Proxy e -> m () -> m ()
+assertThrown :: (Functor m, MonadCatchIO m, Exception e, Show e) =>
+    Maybe String  -- ^ Optional error message.
+ -> Proxy e       -- ^ Type of exception to test for.
+ -> m ()
+ -> m ()
 assertThrown ms ep m = do
     either (\e -> flip const (e `asProxyTypeOf` ep) $ return ()) (const . liftIO $ assertString s) =<< isExceptionThrown m
     where s = fromMaybe "exception NOT thrown" ms
