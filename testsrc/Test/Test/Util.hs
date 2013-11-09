@@ -169,22 +169,16 @@ redirectTests =
     , testCase "catchStderr catches the output of a program that prints to stderr" $ do
         output <- snd <$> catchStderr helloWorldErr
         fromString "Hello, World!\n" @=? output
+    , testCase "catchStdout behaves correctly with exceptions, a test in the middle of other redirectHandle tests" $ do
+        assertThrown Nothing (Proxy :: Proxy IOError) $ do
+            output <- snd <$> catchStdout (throwIO . userError $ "User error!")
+            fromString "This is not the output." @=? output
     , testCase "no stderr is received from hellowWorld" $ do
         output <- snd <$> catchStderr helloWorld
         fromString "" @=? output
-    , testCase "catchStdout behaves correctly with exceptions, a test in the middle of other redirectHandle tests" $ do
-        assertThrown Nothing (Proxy :: Proxy IOError) $ do
-            output <- snd <$> ((throwIO . userError $ "User error!") >> catchStdout helloWorld)
-            fromString "This is not the output." @=? output
     , testCase "no stdout is received from hellowWorldErr" $ do
         output <- snd <$> catchStdout helloWorldErr
         fromString "" @=? output
-    , testCase "redirectHandle stdout works the same as catchStdout" $ do
-        output <- snd <$> redirectHandle stdout "<stdout>" helloWorld
-        fromString "Hello, World!\n" @=? output
-    , testCase "redirectHandle stderr works the same as catchStderr" $ do
-        output <- snd <$> redirectHandle stderr "<stderr>" helloWorldErr
-        fromString "Hello, World!\n" @=? output
     ]
     where helloWorld :: IO ()
           helloWorld = putStrLn "Hello, World!"

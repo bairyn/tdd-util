@@ -20,7 +20,7 @@ module Test.Util
     , assertProcessMicroseconds
 
     -- * Catching stdout/stderr
-    , redirectHandle
+    --, redirectHandle
     , catchStdout
     , catchStderr
 
@@ -40,13 +40,11 @@ import Control.Monad.IO.Class
 import Control.Lens.TH
 import qualified Data.ByteString as L
 import Data.Dynamic
-import Data.Knob as K
 import Data.Maybe
 import Data.Proxy
 import Data.Time.Clock
-import GHC.IO.Handle
 import System.Exit
-import System.IO
+import System.Posix.Redirect
 import System.Process
 import System.Timeout (timeout)
 import Text.Printf
@@ -152,7 +150,8 @@ assertProcessMicroseconds us ph = do
 ----------------------------------------------------------------
 -- Catching stdout/stderr
 
--- | Redirect the output of a handle to a 'Knob' during the execution of the
+-- | A wrapper around @system-posix-riderct@'s redirectStdout to redirect
+-- stdout during the execution of a
 -- computation and capture the output, restoring the handle upon completion.
 -- This may be useful for writing unit tests against some parts of a program
 -- that interface with the outside world, such as logging and the CLI frontend.
@@ -164,36 +163,26 @@ assertProcessMicroseconds us ph = do
 -- test-framework's 'mutuallyExclusive' function and whose child nodes all do
 -- the same.  Both 'stdout' and 'stderr' can be captured at the same time,
 -- however.
-redirectHandle :: (MonadIO m, MonadCatchIO m) =>
-    Handle               -- ^ The handle to redirect during the execution of the computation.
- -> String               -- ^ The name of the Knob handle, especially for error messages.
- -> m a                  -- ^ The computation during the execution of which the handle will be redirected internally to a 'Knob' to capture its output.
- -> m (a, L.ByteString)  -- ^ The result of the original computation combined with the captured output of the 'Handle'.
-redirectHandle h handleName m = M.bracket first final $ \(_dup, knob, _knobHandle) -> do
-    a <- m
-    capture <- K.getContents knob
-    return (a, capture)
-    where first = liftIO $ do
-            knob       <- newKnob L.empty
-            knobHandle <- newFileHandle knob handleName WriteMode
+catchStdout :: IO a -> IO (a, L.ByteString)
+catchStdout m = swp <$> redirectStdout m
+    where swp (a, b) = (b, a)
 
-            dup        <- hDuplicate h
-            hDuplicateTo h knobHandle
-            return (dup, knob, knobHandle)
-          final = \(dup, _knob, knobHandle) -> liftIO $ do
-            hDuplicateTo dup h
-            hClose dup
-            hClose knobHandle
-
--- | Redirect the output of 'stdout' to a 'Knob' to capture the output and
--- return it, by calling 'redirectHandle' with 'stdout'.
-catchStdout :: (MonadIO m, MonadCatchIO m) => m a -> m (a, L.ByteString)
-catchStdout = redirectHandle stdout "<stdout>"
-
--- | Redirect the output of 'stdout' to a 'Knob' to capture the output and
--- return it, by calling 'redirectHandle' with 'stdout'.
-catchStderr :: (MonadIO m, MonadCatchIO m) => m a -> m (a, L.ByteString)
-catchStderr = redirectHandle stderr "<stderr>"
+-- | A wrapper around @system-posix-riderct@'s redirectStderr to redirect
+-- stdout during the execution of a
+-- computation and capture the output, restoring the handle upon completion.
+-- This may be useful for writing unit tests against some parts of a program
+-- that interface with the outside world, such as logging and the CLI frontend.
+--
+-- NB: Since the standard file streams are redirected into a 'Knob', all tests
+-- that invoke 'catchHandle' must be run in isolation from each other, since
+-- only one test can read the handle's output at a time.  The author recommends
+-- structuring tests such that all such tests under a test tree that uses
+-- test-framework's 'mutuallyExclusive' function and whose child nodes all do
+-- the same.  Both 'stdout' and 'stderr' can be captured at the same time,
+-- however.
+catchStderr :: IO a -> IO (a, L.ByteString)
+catchStderr m = swp <$> redirectStderr m
+    where swp (a, b) = (b, a)
 
 ----------------------------------------------------------------
 -- Exceptions

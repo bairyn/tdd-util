@@ -261,7 +261,7 @@ library
    ,parallel-io
    ,MonadCatchIO-transformers
    ,bytestring
-   ,knob
+   ,system-posix-redirect
    ,HUnit
    ,test-framework
    ,test-framework-hunit
@@ -298,7 +298,7 @@ test-suite tdd-util-tests
    ,parallel-io
    ,MonadCatchIO-transformers
    ,bytestring
-   ,knob
+   ,system-posix-redirect
    ,HUnit
    ,test-framework
    ,test-framework-hunit
