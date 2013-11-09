@@ -44,7 +44,8 @@ import Text.Printf
 
 import Test.Util.Framework
 
---- Throwing and catching exceptions ---
+----------------------------------------------------------------
+-- Throwing and catching exceptions ---
 
 -- | Determine whether an exception was caught, and return it if so.
 isExceptionThrown :: (Functor m, MonadCatchIO m, Exception e) => m a -> m (Either e a)
@@ -73,11 +74,11 @@ assertNotThrown msf m = do
     either (liftIO . assertString . sf) (const $ return ()) =<< isExceptionThrown m
     where sf = fromMaybe (\e -> printf "exception thrown: %s" (show e)) msf
 
+----------------------------------------------------------------
+-- Concurrent TDD
 
---- Concurrent TDD ---
-
-
---- Process timing ---
+----------------------------------------------------------------
+-- Process timing
 
 -- | Time a computation.
 timeMicroseconds :: (Monad m, MonadIO m) => m a -> m (a, Integer)
@@ -135,7 +136,8 @@ assertProcessMicroseconds :: Integer -> ProcessHandle -> IO ()
 assertProcessMicroseconds us ph = do
     maybe (throwIO $ TimeLimitExceeded Nothing "assertProcessMicroseconds" us) (const $ return ()) =<< timeoutProcessMicroseconds us ph
 
---- Exceptions ---
+----------------------------------------------------------------
+-- Exceptions
 
 -- | A class of exceptions for "Tests.Util".
 data TestUtilException where                                                                                                                                                               
